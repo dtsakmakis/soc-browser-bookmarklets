@@ -1,0 +1,1 @@
+javascript:(function(){  let text = window.getSelection().toString();  if (!text) return alert("Select some text first.");  let msg = new SpeechSynthesisUtterance(text);  speechSynthesis.speak(msg);})();
