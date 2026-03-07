@@ -69,3 +69,9 @@ This bookmarklet automatically detects the type of **Indicator of Compromise (IO
 
 Bookmarklets execute JavaScript in the context of the current webpage.
 Only use bookmarklets from **trusted sources**.
+
+---
+
+## License
+
+This project is licensed under the MIT License.
