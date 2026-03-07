@@ -1,0 +1,1 @@
+javascript:(()=>{const txt=prompt('Paste URLs (one per line)');if(!txt)return;const urls=txt.split(/\s+/).filter(Boolean);for(const u of urls){const href=/^https?:\/\//i.test(u)?u:%27https://%27+u;window.open(href,%27_blank%27)}})();
