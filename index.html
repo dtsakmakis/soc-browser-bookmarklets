@@ -23,6 +23,7 @@
       --yellow: #9e6a03;
       --red: #da3633;
       --button-text: #ffffff;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     }
 
     * {
@@ -52,8 +53,8 @@
       border: 1px solid var(--border);
       border-radius: 16px;
       background: linear-gradient(180deg, rgba(47,129,247,0.08), rgba(22,27,34,0.95));
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
     }
 
     .badge {
@@ -121,7 +122,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 18px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .info-card {
@@ -143,6 +144,141 @@
     }
 
     .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .toolbar {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar-top {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel-2);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: rgba(47,129,247,0.65);
+      box-shadow: 0 0 0 3px rgba(47,129,247,0.18);
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-chip {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.15s ease;
+    }
+
+    .filter-chip:hover {
+      border-color: #4d5661;
+      background: #17202b;
+    }
+
+    .filter-chip.active {
+      background: rgba(47,129,247,0.16);
+      border-color: rgba(47,129,247,0.5);
+      color: #9ecbff;
+    }
+
+    .results-meta {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .install-help {
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .install-help-toggle {
+      width: 100%;
+      background: transparent;
+      color: var(--text);
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      padding: 16px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .install-help-toggle:hover {
+      background: #1b2129;
+    }
+
+    .install-help-body {
+      display: none;
+      padding: 0 18px 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .install-help.open .install-help-body {
+      display: block;
+    }
+
+    .install-help-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .install-step {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel-2);
+      padding: 14px;
+    }
+
+    .install-step h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .install-step p,
+    .install-step li {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .install-step ul {
       margin: 0;
       padding-left: 18px;
     }
@@ -176,6 +312,11 @@
       flex-direction: column;
       gap: 14px;
       min-height: 240px;
+      transition: 0.15s ease;
+    }
+
+    .card.hidden {
+      display: none;
     }
 
     .card h3 {
@@ -298,6 +439,16 @@
       color: #c9d1d9;
     }
 
+    .empty-state {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.02);
+    }
+
     .footer {
       margin-top: 40px;
       padding-top: 20px;
@@ -322,6 +473,12 @@
       padding: 2px 6px;
       color: #c9d1d9;
       font-size: 13px;
+    }
+
+    @media (max-width: 720px) {
+      .toolbar-top {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 640px) {
@@ -401,6 +558,74 @@
       </div>
     </section>
 
+    <section class="toolbar">
+      <div class="toolbar-top">
+        <input
+          id="searchInput"
+          class="search-input"
+          type="text"
+          placeholder="Search bookmarklets, categories, or keywords..."
+          aria-label="Search bookmarklets"
+        />
+        <div class="results-meta">
+          <span id="resultsCount">12 bookmarklets shown</span>
+        </div>
+      </div>
+
+      <div class="filter-chips" role="tablist" aria-label="Bookmarklet category filters">
+        <button class="filter-chip active" data-filter="all" type="button">All</button>
+        <button class="filter-chip" data-filter="investigation" type="button">Investigation</button>
+        <button class="filter-chip" data-filter="utilities" type="button">Utilities</button>
+        <button class="filter-chip" data-filter="highlighters" type="button">Highlighters</button>
+        <button class="filter-chip" data-filter="cleaners" type="button">Cleaners</button>
+      </div>
+    </section>
+
+    <section class="install-help open" id="installHelp">
+      <button class="install-help-toggle" id="installHelpToggle" type="button" aria-expanded="true" aria-controls="installHelpBody">
+        <span>How to Install Bookmarklets</span>
+        <span id="installHelpIcon">−</span>
+      </button>
+
+      <div class="install-help-body" id="installHelpBody">
+        <div class="install-help-grid">
+          <div class="install-step">
+            <h3>Drag & Drop</h3>
+            <ul>
+              <li>Make sure your bookmarks bar is visible.</li>
+              <li>Drag a <strong>Click or Drag</strong> button to the bookmarks bar.</li>
+              <li>Open any page and click the saved bookmarklet.</li>
+            </ul>
+          </div>
+
+          <div class="install-step">
+            <h3>Copy Code</h3>
+            <ul>
+              <li>Click <strong>Copy Bookmarklet Code</strong>.</li>
+              <li>Create a new browser bookmark.</li>
+              <li>Paste the copied code into the bookmark URL field.</li>
+            </ul>
+          </div>
+
+          <div class="install-step">
+            <h3>Click to Test</h3>
+            <p>
+              You can click a bookmarklet button on this page to test it immediately
+              before saving it to your browser.
+            </p>
+          </div>
+
+          <div class="install-step">
+            <h3>Pop-up Note</h3>
+            <p>
+              Some bookmarklets open new tabs. Your browser may block pop-ups the first time.
+              If prompted, allow pop-ups for this site and try again.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="bookmarklets">
       <h2>Utilities</h2>
       <p class="section-intro">
@@ -408,7 +633,11 @@
       </p>
 
       <div class="grid">
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="investigation"
+          data-search="ioc search investigation threat intel soc lookup virustotal abuseipdb whois hybrid analysis ip domain hash"
+        >
           <h3>IOC Search</h3>
           <div class="tags">
             <span class="tag">Threat Intel</span>
@@ -438,7 +667,11 @@
           </div>
         </article>
 
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="utilities"
+          data-search="bulk url opener utility automation browser links tabs urls"
+        >
           <h3>Bulk URL Opener</h3>
           <div class="tags">
             <span class="tag">Automation</span>
@@ -467,7 +700,11 @@
           </div>
         </article>
 
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="utilities"
+          data-search="translator translate text utility google translate language browser helper"
+        >
           <h3>Translator</h3>
           <div class="tags">
             <span class="tag">Text Utility</span>
@@ -496,7 +733,11 @@
           </div>
         </article>
 
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="utilities"
+          data-search="speech reader text utility accessibility speech synthesis selected text"
+        >
           <h3>Speech Reader</h3>
           <div class="tags">
             <span class="tag">Accessibility</span>
@@ -525,7 +766,11 @@
           </div>
         </article>
 
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="utilities"
+          data-search="consecutive numbers generator utility clipboard range copy numbers"
+        >
           <h3>Consecutive Numbers Generator</h3>
           <div class="tags">
             <span class="tag">Utility</span>
@@ -553,17 +798,12 @@
             </button>
           </div>
         </article>
-      </div>
-    </section>
 
-    <section class="section">
-      <h2>Highlighters</h2>
-      <p class="section-intro">
-        Click a button to test it on this page, drag it to your bookmarks bar, or copy the bookmarklet code manually.
-      </p>
-
-      <div class="grid">
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="highlighters"
+          data-search="yellow highlighter highlighting page utility text highlight yellow"
+        >
           <h3>Yellow Highlighter</h3>
           <div class="tags">
             <span class="tag">Highlighting</span>
@@ -592,7 +832,11 @@
           </div>
         </article>
 
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="highlighters"
+          data-search="red highlighter highlighting page utility text highlight red"
+        >
           <h3>Red Highlighter</h3>
           <div class="tags">
             <span class="tag">Highlighting</span>
@@ -621,7 +865,11 @@
           </div>
         </article>
 
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="highlighters"
+          data-search="green highlighter highlighting page utility text highlight green"
+        >
           <h3>Green Highlighter</h3>
           <div class="tags">
             <span class="tag">Highlighting</span>
@@ -649,17 +897,12 @@
             </button>
           </div>
         </article>
-      </div>
-    </section>
 
-    <section class="section">
-      <h2>Highlight Cleaners</h2>
-      <p class="section-intro">
-        Remove one highlight color at a time, or clear all highlight colors from the current page.
-      </p>
-
-      <div class="grid">
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="cleaners"
+          data-search="yellow highlight cleaner cleanup remove yellow highlights"
+        >
           <h3>Yellow Highlight Cleaner</h3>
           <div class="tags">
             <span class="tag">Cleanup</span>
@@ -687,7 +930,11 @@
           </div>
         </article>
 
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="cleaners"
+          data-search="red highlight cleaner cleanup remove red highlights"
+        >
           <h3>Red Highlight Cleaner</h3>
           <div class="tags">
             <span class="tag">Cleanup</span>
@@ -715,7 +962,11 @@
           </div>
         </article>
 
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="cleaners"
+          data-search="green highlight cleaner cleanup remove green highlights"
+        >
           <h3>Green Highlight Cleaner</h3>
           <div class="tags">
             <span class="tag">Cleanup</span>
@@ -743,7 +994,11 @@
           </div>
         </article>
 
-        <article class="card">
+        <article
+          class="card bookmarklet-card"
+          data-category="cleaners"
+          data-search="highlight cleaner cleanup all colors remove yellow red green highlights"
+        >
           <h3>Highlight Cleaner</h3>
           <div class="tags">
             <span class="tag">Cleanup</span>
@@ -770,6 +1025,10 @@
             </button>
           </div>
         </article>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        No bookmarklets matched your search or selected category.
       </div>
     </section>
 
@@ -811,6 +1070,57 @@
 
     document.querySelectorAll(".copy-btn").forEach((button) => {
       button.addEventListener("click", () => copyBookmarkletCode(button));
+    });
+
+    const searchInput = document.getElementById("searchInput");
+    const filterButtons = document.querySelectorAll(".filter-chip");
+    const cards = document.querySelectorAll(".bookmarklet-card");
+    const resultsCount = document.getElementById("resultsCount");
+    const emptyState = document.getElementById("emptyState");
+
+    let activeFilter = "all";
+
+    function applyFilters() {
+      const query = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const category = card.dataset.category || "";
+        const searchText = (card.dataset.search || "").toLowerCase();
+
+        const matchesCategory = activeFilter === "all" || category === activeFilter;
+        const matchesSearch = query === "" || searchText.includes(query);
+
+        const isVisible = matchesCategory && matchesSearch;
+        card.classList.toggle("hidden", !isVisible);
+
+        if (isVisible) visibleCount += 1;
+      });
+
+      resultsCount.textContent = `${visibleCount} bookmarklet${visibleCount === 1 ? "" : "s"} shown`;
+      emptyState.style.display = visibleCount === 0 ? "block" : "none";
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+        activeFilter = button.dataset.filter;
+        applyFilters();
+      });
+    });
+
+    searchInput.addEventListener("input", applyFilters);
+    applyFilters();
+
+    const installHelp = document.getElementById("installHelp");
+    const installHelpToggle = document.getElementById("installHelpToggle");
+    const installHelpIcon = document.getElementById("installHelpIcon");
+
+    installHelpToggle.addEventListener("click", () => {
+      const isOpen = installHelp.classList.toggle("open");
+      installHelpToggle.setAttribute("aria-expanded", String(isOpen));
+      installHelpIcon.textContent = isOpen ? "−" : "+";
     });
   </script>
 </body>
