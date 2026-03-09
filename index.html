@@ -22,6 +22,7 @@
       --green-hover: #2ea043;
       --yellow: #9e6a03;
       --red: #da3633;
+      --button-text: #ffffff;
     }
 
     * {
@@ -41,7 +42,7 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1160px;
       margin: 0 auto;
       padding: 32px 20px 64px;
     }
@@ -78,7 +79,7 @@
     .subtitle {
       margin: 0;
       color: var(--muted);
-      max-width: 760px;
+      max-width: 820px;
       font-size: 17px;
     }
 
@@ -151,7 +152,7 @@
     }
 
     .section h2 {
-      margin: 0 0 14px;
+      margin: 0 0 10px;
       font-size: 28px;
     }
 
@@ -162,7 +163,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
       gap: 18px;
     }
 
@@ -174,7 +175,7 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      min-height: 220px;
+      min-height: 240px;
     }
 
     .card h3 {
@@ -206,23 +207,38 @@
       background: var(--panel-2);
     }
 
-    .bookmarklet-btn {
-      display: inline-block;
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: stretch;
+    }
+
+    .bookmarklet-btn,
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: fit-content;
       max-width: 100%;
+      min-height: 44px;
       padding: 11px 15px;
       border-radius: 10px;
       text-decoration: none;
       font-weight: 700;
-      background: var(--blue);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
       transition: 0.15s ease;
-      cursor: grab;
       white-space: normal;
       word-break: normal;
       overflow-wrap: anywhere;
+      font-size: 14px;
+    }
+
+    .bookmarklet-btn {
+      background: var(--blue);
+      color: var(--button-text);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      cursor: grab;
     }
 
     .bookmarklet-btn:hover {
@@ -252,6 +268,25 @@
 
     .bookmarklet-btn.red:hover {
       filter: brightness(1.08);
+    }
+
+    .copy-btn {
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: #18212c;
+      border-color: #46505a;
+      transform: translateY(-1px);
+    }
+
+    .copy-btn.copied {
+      border-color: rgba(46, 160, 67, 0.5);
+      background: rgba(46, 160, 67, 0.15);
+      color: #9be9a8;
     }
 
     .note {
@@ -343,6 +378,7 @@
           <li>Make sure your bookmarks bar is visible.</li>
           <li>Click a button to run it on this page.</li>
           <li>Drag any button to your bookmarks bar to use it anywhere.</li>
+          <li>Use the copy button if your browser blocks drag-and-drop.</li>
         </ul>
       </div>
 
@@ -368,7 +404,7 @@
     <section class="section" id="bookmarklets">
       <h2>Utilities</h2>
       <p class="section-intro">
-        Click a button to run it on this page, or drag it to your bookmarks bar.
+        Click a button to run it on this page, drag it to your bookmarks bar, or copy the bookmarklet code manually.
       </p>
 
       <div class="grid">
@@ -383,14 +419,23 @@
             Detects IPs, domains, and common file hashes, then opens relevant
             intelligence sources such as VirusTotal, AbuseIPDB, Whois, and Hybrid Analysis.
           </p>
-          <a
-            class="bookmarklet-btn"
-            title="Click to run on this page or drag to bookmarks bar"
-            draggable="true"
-            href='javascript:!function(){try{const e=(getSelection?getSelection().toString():"").trim(),t=(e||prompt("IOC?")||"").trim();if(!t)return;const o=encodeURIComponent(t),n=/^(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}$/.test(t),r=/^(?:[A-Fa-f0-9]{1,4}:){2,7}[A-Fa-f0-9]{1,4}$/.test(t),a=/^(?:https?|ftp):\/\//i.test(t),c=/^[A-Fa-f0-9]{64}$/.test(t),i=/^[A-Fa-f0-9]{40}$/.test(t),s=/^[A-Fa-f0-9]{32}$/.test(t),f=c||i||s,d=!a&&/^[A-Za-z0-9-]{1,63}(\.[A-Za-z0-9-]{1,63})+\.?$/.test(t);let l=[];if(n||r)l=[`https://www.virustotal.com/gui/search/${o}`,`https://www.abuseipdb.com/check/${o}`];else if(d){const e=t.replace(/\.$/,"");l=[`https://www.virustotal.com/gui/search/${encodeURIComponent(e)}`,`https://www.whois.com/whois/${e}`]}else{if(!f)return void alert("Unsupported input. Enter IP, domain, or MD5/SHA1/SHA256 hash.");l=[`https://www.virustotal.com/gui/search/${o}`,`https://www.hybrid-analysis.com/search?query=${o}`]}[...new Set(l)].forEach(e=>window.open(e,"_blank"))}catch(e){alert("IOC launcher error: "+e)}}();'
-          >
-            Click or Drag: IOC Search
-          </a>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:!function(){try{const e=(getSelection?getSelection().toString():"").trim(),t=(e||prompt("IOC?")||"").trim();if(!t)return;const o=encodeURIComponent(t),n=/^(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}$/.test(t),r=/^(?:[A-Fa-f0-9]{1,4}:){2,7}[A-Fa-f0-9]{1,4}$/.test(t),a=/^(?:https?|ftp):\/\//i.test(t),c=/^[A-Fa-f0-9]{64}$/.test(t),i=/^[A-Fa-f0-9]{40}$/.test(t),s=/^[A-Fa-f0-9]{32}$/.test(t),f=c||i||s,d=!a&&/^[A-Za-z0-9-]{1,63}(\.[A-Za-z0-9-]{1,63})+\.?$/.test(t);let l=[];if(n||r)l=[`https://www.virustotal.com/gui/search/${o}`,`https://www.abuseipdb.com/check/${o}`];else if(d){const e=t.replace(/\.$/,"");l=[`https://www.virustotal.com/gui/search/${encodeURIComponent(e)}`,`https://www.whois.com/whois/${e}`]}else{if(!f)return void alert("Unsupported input. Enter IP, domain, or MD5/SHA1/SHA256 hash.");l=[`https://www.virustotal.com/gui/search/${o}`,`https://www.hybrid-analysis.com/search?query=${o}`]}[...new Set(l)].forEach(e=>window.open(e,"_blank"))}catch(e){alert("IOC launcher error: "+e)}}();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:!function(){try{const e=(getSelection?getSelection().toString():"").trim(),t=(e||prompt("IOC?")||"").trim();if(!t)return;const o=encodeURIComponent(t),n=/^(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}$/.test(t),r=/^(?:[A-Fa-f0-9]{1,4}:){2,7}[A-Fa-f0-9]{1,4}$/.test(t),a=/^(?:https?|ftp):\/\//i.test(t),c=/^[A-Fa-f0-9]{64}$/.test(t),i=/^[A-Fa-f0-9]{40}$/.test(t),s=/^[A-Fa-f0-9]{32}$/.test(t),f=c||i||s,d=!a&&/^[A-Za-z0-9-]{1,63}(\.[A-Za-z0-9-]{1,63})+\.?$/.test(t);let l=[];if(n||r)l=[`https://www.virustotal.com/gui/search/${o}`,`https://www.abuseipdb.com/check/${o}`];else if(d){const e=t.replace(/\.$/,"");l=[`https://www.virustotal.com/gui/search/${encodeURIComponent(e)}`,`https://www.whois.com/whois/${e}`]}else{if(!f)return void alert("Unsupported input. Enter IP, domain, or MD5/SHA1/SHA256 hash.");l=[`https://www.virustotal.com/gui/search/${o}`,`https://www.hybrid-analysis.com/search?query=${o}`]}[...new Set(l)].forEach(e=>window.open(e,"_blank"))}catch(e){alert("IOC launcher error: "+e)}}();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
         </article>
 
         <article class="card">
@@ -403,14 +448,23 @@
             Opens multiple URLs in separate tabs. Useful when you need to open a batch
             of cases, sources, dashboards, or reference links quickly.
           </p>
-          <a
-            class="bookmarklet-btn"
-            title="Click to run on this page or drag to bookmarks bar"
-            draggable="true"
-            href='javascript:(()=>{const txt=prompt("Paste URLs (one per line)");if(!txt)return;const urls=txt.split(/\s+/).filter(Boolean);for(const u of urls){const href=/^https?:\/\//i.test(u)?u:"https://"+u;window.open(href,"_blank")}})();'
-          >
-            Click or Drag: Bulk URL Opener
-          </a>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(()=>{const txt=prompt("Paste URLs (one per line)");if(!txt)return;const urls=txt.split(/\s+/).filter(Boolean);for(const u of urls){const href=/^https?:\/\//i.test(u)?u:"https://"+u;window.open(href,"_blank")}})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(()=>{const txt=prompt("Paste URLs (one per line)");if(!txt)return;const urls=txt.split(/\s+/).filter(Boolean);for(const u of urls){const href=/^https?:\/\//i.test(u)?u:"https://"+u;window.open(href,"_blank")}})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
         </article>
 
         <article class="card">
@@ -423,14 +477,23 @@
             Translates selected text in a new tab using Google Translate.
             Useful for foreign-language pages, domains, comments, and messages.
           </p>
-          <a
-            class="bookmarklet-btn"
-            title="Click to run on this page or drag to bookmarks bar"
-            draggable="true"
-            href='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Please select some text first.");window.open("https://translate.google.com/?sl=auto&tl=en&text="+encodeURIComponent(text));})();'
-          >
-            Click or Drag: Translator
-          </a>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Please select some text first.");window.open("https://translate.google.com/?sl=auto&tl=en&text="+encodeURIComponent(text));})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Please select some text first.");window.open("https://translate.google.com/?sl=auto&tl=en&text="+encodeURIComponent(text));})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
         </article>
 
         <article class="card">
@@ -443,14 +506,23 @@
             Reads selected text aloud using the browser speech synthesis API.
             Helpful for quick reviews of selected content.
           </p>
-          <a
-            class="bookmarklet-btn"
-            title="Click to run on this page or drag to bookmarks bar"
-            draggable="true"
-            href='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Select some text first.");let msg=new SpeechSynthesisUtterance(text);speechSynthesis.speak(msg);})();'
-          >
-            Click or Drag: Speech Reader
-          </a>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Select some text first.");let msg=new SpeechSynthesisUtterance(text);speechSynthesis.speak(msg);})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Select some text first.");let msg=new SpeechSynthesisUtterance(text);speechSynthesis.speak(msg);})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
         </article>
 
         <article class="card">
@@ -463,14 +535,23 @@
             Generates a range of consecutive numbers from input like
             <code class="inline">5-10</code> and copies the result to the clipboard.
           </p>
-          <a
-            class="bookmarklet-btn"
-            title="Click to run on this page or drag to bookmarks bar"
-            draggable="true"
-            href='javascript:(function(){let input=prompt("Enter a range like 5-10:");if(!input||!input.includes("-")){alert("Please enter a valid range using a dash (e.g., 5-10).");return;}let[start,end]=input.split("-").map(Number);if(isNaN(start)||isNaN(end)){alert("Both values must be numbers.");return;}if(start>=end){alert("Start must be less than end.");return;}let outputNumbers=[];for(let i=start;i<=end;i++){outputNumbers.push(i);}let result=outputNumbers.join(", ");navigator.clipboard.writeText(result).then(()=>alert("Copied to clipboard!")).catch(err=>alert("Failed to copy: "+err));})();'
-          >
-            Click or Drag: Number Generator
-          </a>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){let input=prompt("Enter a range like 5-10:");if(!input||!input.includes("-")){alert("Please enter a valid range using a dash (e.g., 5-10).");return;}let[start,end]=input.split("-").map(Number);if(isNaN(start)||isNaN(end)){alert("Both values must be numbers.");return;}if(start>=end){alert("Start must be less than end.");return;}let outputNumbers=[];for(let i=start;i<=end;i++){outputNumbers.push(i);}let result=outputNumbers.join(", ");navigator.clipboard.writeText(result).then(()=>alert("Copied to clipboard!")).catch(err=>alert("Failed to copy: "+err));})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){let input=prompt("Enter a range like 5-10:");if(!input||!input.includes("-")){alert("Please enter a valid range using a dash (e.g., 5-10).");return;}let[start,end]=input.split("-").map(Number);if(isNaN(start)||isNaN(end)){alert("Both values must be numbers.");return;}if(start>=end){alert("Start must be less than end.");return;}let outputNumbers=[];for(let i=start;i<=end;i++){outputNumbers.push(i);}let result=outputNumbers.join(", ");navigator.clipboard.writeText(result).then(()=>alert("Copied to clipboard!")).catch(err=>alert("Failed to copy: "+err));})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
         </article>
       </div>
     </section>
@@ -478,7 +559,7 @@
     <section class="section">
       <h2>Highlighters</h2>
       <p class="section-intro">
-        Click a button to test it on this page, or drag it to your bookmarks bar to use it anywhere.
+        Click a button to test it on this page, drag it to your bookmarks bar, or copy the bookmarklet code manually.
       </p>
 
       <div class="grid">
@@ -492,14 +573,23 @@
             Highlights matching text in yellow across the page using selected text
             or prompted input.
           </p>
-          <a
-            class="bookmarklet-btn yellow"
-            title="Click to run on this page or drag to bookmarks bar"
-            draggable="true"
-            href='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (YELLOW):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightYellow__",S="__copilotHighlightStyleYellow__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:yellow;color:black;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(255,255,0,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for: "+q);return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
-          >
-            Click or Drag: Yellow Highlighter
-          </a>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn yellow"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (YELLOW):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightYellow__",S="__copilotHighlightStyleYellow__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:yellow;color:black;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(255,255,0,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for: "+q);return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (YELLOW):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightYellow__",S="__copilotHighlightStyleYellow__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:yellow;color:black;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(255,255,0,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for: "+q);return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
         </article>
 
         <article class="card">
@@ -512,14 +602,23 @@
             Highlights matching text in red across the page using selected text
             or prompted input.
           </p>
-          <a
-            class="bookmarklet-btn red"
-            title="Click to run on this page or drag to bookmarks bar"
-            draggable="true"
-            href='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (RED):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightRed__",S="__copilotHighlightStyleRed__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:#ff3b30;color:white;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(255,59,48,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for: "+q);return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
-          >
-            Click or Drag: Red Highlighter
-          </a>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn red"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (RED):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightRed__",S="__copilotHighlightStyleRed__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:#ff3b30;color:white;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(255,59,48,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for: "+q);return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (RED):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightRed__",S="__copilotHighlightStyleRed__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:#ff3b30;color:white;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(255,59,48,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for: "+q);return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
         </article>
 
         <article class="card">
@@ -532,42 +631,153 @@
             Highlights matching text in green across the page using selected text
             or prompted input.
           </p>
-          <a
-            class="bookmarklet-btn green"
-            title="Click to run on this page or drag to bookmarks bar"
-            draggable="true"
-            href='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (GREEN):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightGreen__",S="__copilotHighlightStyleGreen__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:#34c759;color:#0b2312;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(52,199,89,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for: "+q);return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
-          >
-            Click or Drag: Green Highlighter
-          </a>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn green"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (GREEN):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightGreen__",S="__copilotHighlightStyleGreen__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:#34c759;color:#0b2312;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(52,199,89,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for: "+q);return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (GREEN):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightGreen__",S="__copilotHighlightStyleGreen__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:#34c759;color:#0b2312;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(52,199,89,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for: "+q);return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Highlight Cleaners</h2>
+      <p class="section-intro">
+        Remove one highlight color at a time, or clear all highlight colors from the current page.
+      </p>
+
+      <div class="grid">
+        <article class="card">
+          <h3>Yellow Highlight Cleaner</h3>
+          <div class="tags">
+            <span class="tag">Cleanup</span>
+            <span class="tag">Yellow</span>
+          </div>
+          <p>
+            Removes only yellow highlights from the current page.
+          </p>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn yellow"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){var C="__copilotHighlightYellow__",S="__copilotHighlightStyleYellow__";document.querySelectorAll("."+C).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(S);if(st)st.remove()})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){var C="__copilotHighlightYellow__",S="__copilotHighlightStyleYellow__";document.querySelectorAll("."+C).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(S);if(st)st.remove()})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Red Highlight Cleaner</h3>
+          <div class="tags">
+            <span class="tag">Cleanup</span>
+            <span class="tag">Red</span>
+          </div>
+          <p>
+            Removes only red highlights from the current page.
+          </p>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn red"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){var C="__copilotHighlightRed__",S="__copilotHighlightStyleRed__";document.querySelectorAll("."+C).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(S);if(st)st.remove()})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){var C="__copilotHighlightRed__",S="__copilotHighlightStyleRed__";document.querySelectorAll("."+C).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(S);if(st)st.remove()})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
+        </article>
+
+        <article class="card">
+          <h3>Green Highlight Cleaner</h3>
+          <div class="tags">
+            <span class="tag">Cleanup</span>
+            <span class="tag">Green</span>
+          </div>
+          <p>
+            Removes only green highlights from the current page.
+          </p>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn green"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){var C="__copilotHighlightGreen__",S="__copilotHighlightStyleGreen__";document.querySelectorAll("."+C).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(S);if(st)st.remove()})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){var C="__copilotHighlightGreen__",S="__copilotHighlightStyleGreen__";document.querySelectorAll("."+C).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(S);if(st)st.remove()})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
         </article>
 
         <article class="card">
           <h3>Highlight Cleaner</h3>
           <div class="tags">
             <span class="tag">Cleanup</span>
-            <span class="tag">Page Utility</span>
+            <span class="tag">All Colors</span>
           </div>
           <p>
             Removes stored yellow, red, and green highlights from the current page.
           </p>
-          <a
-            class="bookmarklet-btn"
-            title="Click to run on this page or drag to bookmarks bar"
-            draggable="true"
-            href='javascript:(function(){var C=[{c:"__copilotHighlightYellow__",s:"__copilotHighlightStyleYellow__"},{c:"__copilotHighlightRed__",s:"__copilotHighlightStyleRed__"},{c:"__copilotHighlightGreen__",s:"__copilotHighlightStyleGreen__"}];C.forEach(function(x){document.querySelectorAll("."+x.c).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(x.s);if(st)st.remove()})})();'
-          >
-            Click or Drag: Highlight Cleaner
-          </a>
+          <div class="card-actions">
+            <a
+              class="bookmarklet-btn"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){var C=[{c:"__copilotHighlightYellow__",s:"__copilotHighlightStyleYellow__"},{c:"__copilotHighlightRed__",s:"__copilotHighlightStyleRed__"},{c:"__copilotHighlightGreen__",s:"__copilotHighlightStyleGreen__"}];C.forEach(function(x){document.querySelectorAll("."+x.c).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(x.s);if(st)st.remove()})})();'
+            >
+              Click or Drag
+            </a>
+            <button
+              class="copy-btn"
+              data-code='javascript:(function(){var C=[{c:"__copilotHighlightYellow__",s:"__copilotHighlightStyleYellow__"},{c:"__copilotHighlightRed__",s:"__copilotHighlightStyleRed__"},{c:"__copilotHighlightGreen__",s:"__copilotHighlightStyleGreen__"}];C.forEach(function(x){document.querySelectorAll("."+x.c).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(x.s);if(st)st.remove()})})();'
+              type="button"
+            >
+              Copy Bookmarklet Code
+            </button>
+          </div>
         </article>
       </div>
     </section>
 
     <div class="note">
-      Tip: Click a button to test it on this page, or drag it to your bookmarks bar to use it anywhere.
-      For bookmarklets that open new tabs, your browser may block pop-ups the first time. If that happens,
-      allow pop-ups for this site and try again.
-      If dragging does not work, create a new browser bookmark manually and paste the bookmarklet code into the bookmark URL field.
+      Tip: Click a button to test it on this page, drag it to your bookmarks bar to use it anywhere,
+      or copy the bookmarklet code manually into a browser bookmark.
+      For bookmarklets that open new tabs, your browser may block pop-ups the first time.
+      If that happens, allow pop-ups for this site and try again.
     </div>
 
     <footer class="footer">
@@ -576,5 +786,32 @@
       <a href="https://github.com/dtsakmakis/soc-browser-bookmarklets" target="_blank" rel="noopener noreferrer">GitHub</a>.
     </footer>
   </div>
+
+  <script>
+    async function copyBookmarkletCode(button) {
+      const code = button.getAttribute("data-code");
+      if (!code) return;
+
+      const originalText = button.textContent;
+
+      try {
+        await navigator.clipboard.writeText(code);
+        button.textContent = "Copied";
+        button.classList.add("copied");
+      } catch (error) {
+        alert("Copy failed. Your browser may have blocked clipboard access.");
+        return;
+      }
+
+      setTimeout(() => {
+        button.textContent = originalText;
+        button.classList.remove("copied");
+      }, 1500);
+    }
+
+    document.querySelectorAll(".copy-btn").forEach((button) => {
+      button.addEventListener("click", () => copyBookmarkletCode(button));
+    });
+  </script>
 </body>
 </html>
