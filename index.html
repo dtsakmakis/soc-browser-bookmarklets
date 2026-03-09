@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SOC Browser Bookmarklets</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+h1 {
+    margin-bottom: 10px;
+}
+
+p {
+    color: #555;
+}
+
+.bookmarklet {
+    display: inline-block;
+    margin: 8px 8px 8px 0;
+    padding: 10px 16px;
+    background: #2f81f7;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.bookmarklet:hover {
+    opacity: 0.9;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>SOC Browser Bookmarklets</h1>
+
+<p>Drag a button below to your bookmarks bar.</p>
+
+<a class="bookmarklet"
+href='javascript:(()=>{const txt=prompt("Paste URLs (one per line)");if(!txt)return;const urls=txt.split(/\s+/).filter(Boolean);for(const u of urls){const href=/^https?:\/\//i.test(u)?u:"https://"+u;window.open(href,"_blank")}})();'>
+Bulk URL Opener
+</a>
+
+<a class="bookmarklet"
+href='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Select some text first.");window.open("https://translate.google.com/?sl=auto&tl=en&text="+encodeURIComponent(text));})();'>
+Translator
+</a>
+
+</body>
+</html>
