@@ -1,58 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>SOC Browser Bookmarklets</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOC Browser Bookmarklets</title>
+  <meta
+    name="description"
+    content="Security-focused browser bookmarklets for quick IOC lookups, automation, and page utilities."
+  />
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --panel-2: #0f1720;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --blue: #2f81f7;
+      --blue-hover: #1f6feb;
+      --green: #238636;
+      --green-hover: #2ea043;
+      --yellow: #9e6a03;
+      --red: #da3633;
+    }
 
-<style>
-body {
-    font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 16px;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-h1 {
-    margin-bottom: 10px;
-}
+    html {
+      scroll-behavior: smooth;
+    }
 
-p {
-    color: #555;
-}
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #0d1117 0%, #0b1220 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
 
-.bookmarklet {
-    display: inline-block;
-    margin: 8px 8px 8px 0;
-    padding: 10px 16px;
-    background: #2f81f7;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: bold;
-}
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
 
-.bookmarklet:hover {
-    opacity: 0.9;
-}
-</style>
+    .hero {
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(47,129,247,0.08), rgba(22,27,34,0.95));
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      margin-bottom: 28px;
+    }
 
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border: 1px solid rgba(47,129,247,0.35);
+      border-radius: 999px;
+      background: rgba(47,129,247,0.12);
+      color: #9ecbff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 40px;
+      line-height: 1.15;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+      font-size: 17px;
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .top-link {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--panel);
+    }
+
+    .top-link:hover {
+      border-color: #484f58;
+      background: #1c2128;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .info-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .info-card h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .info-card p,
+    .info-card li {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .section {
+      margin-top: 34px;
+    }
+
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: 28px;
+    }
+
+    .section p.section-intro {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-height: 220px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      flex-grow: 1;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 5px 9px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--panel-2);
+    }
+
+    .bookmarklet-btn {
+      display: inline-block;
+      width: fit-content;
+      padding: 11px 15px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      background: var(--blue);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: 0.15s ease;
+    }
+
+    .bookmarklet-btn:hover {
+      background: var(--blue-hover);
+      transform: translateY(-1px);
+    }
+
+    .bookmarklet-btn.green {
+      background: var(--green);
+    }
+
+    .bookmarklet-btn.green:hover {
+      background: var(--green-hover);
+    }
+
+    .bookmarklet-btn.yellow {
+      background: var(--yellow);
+    }
+
+    .bookmarklet-btn.yellow:hover {
+      filter: brightness(1.08);
+    }
+
+    .bookmarklet-btn.red {
+      background: var(--red);
+    }
+
+    .bookmarklet-btn.red:hover {
+      filter: brightness(1.08);
+    }
+
+    .note {
+      margin-top: 28px;
+      background: rgba(47,129,247,0.08);
+      border: 1px solid rgba(47,129,247,0.25);
+      border-radius: 14px;
+      padding: 16px 18px;
+      color: #c9d1d9;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer a {
+      color: #9ecbff;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    code.inline {
+      background: #11161d;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 6px;
+      color: #c9d1d9;
+      font-size: 13px;
+    }
+
+    @media (max-width: 640px) {
+      h1 {
+        font-size: 32px;
+      }
+
+      .hero {
+        padding: 22px;
+      }
+
+      .container {
+        padding: 20px 14px 48px;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="container">
+    <section class="hero">
+      <div class="badge">GitHub Pages Demo</div>
+      <h1>SOC Browser Bookmarklets</h1>
+      <p class="subtitle">
+        Security-focused browser bookmarklets for quick IOC lookups, automation,
+        text utilities, and investigation workflow helpers.
+      </p>
 
-<h1>SOC Browser Bookmarklets</h1>
+      <div class="top-actions">
+        <a class="top-link" href="https://github.com/dtsakmakis/soc-browser-bookmarklets" target="_blank" rel="noopener noreferrer">
+          View Repository
+        </a>
+        <a class="top-link" href="#bookmarklets">
+          Jump to Bookmarklets
+        </a>
+      </div>
+    </section>
 
-<p>Drag a button below to your bookmarks bar.</p>
+    <section class="info-grid">
+      <div class="info-card">
+        <h2>How to Use</h2>
+        <ul>
+          <li>Make sure your bookmarks bar is visible.</li>
+          <li>Drag any button below to your bookmarks bar.</li>
+          <li>Open a webpage and click the bookmarklet to run it.</li>
+        </ul>
+      </div>
 
-<a class="bookmarklet"
-href='javascript:(()=>{const txt=prompt("Paste URLs (one per line)");if(!txt)return;const urls=txt.split(/\s+/).filter(Boolean);for(const u of urls){const href=/^https?:\/\//i.test(u)?u:"https://"+u;window.open(href,"_blank")}})();'>
-Bulk URL Opener
-</a>
+      <div class="info-card">
+        <h2>What This Includes</h2>
+        <ul>
+          <li>IOC and browser investigation helpers</li>
+          <li>Bulk URL automation</li>
+          <li>Text utilities and speech tools</li>
+          <li>Page highlighters and cleanup helpers</li>
+        </ul>
+      </div>
 
-<a class="bookmarklet"
-href='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Select some text first.");window.open("https://translate.google.com/?sl=auto&tl=en&text="+encodeURIComponent(text));})();'>
-Translator
-</a>
+      <div class="info-card">
+        <h2>Important Note</h2>
+        <p>
+          Bookmarklets execute JavaScript in the context of the current webpage.
+          Only use bookmarklets from trusted sources and test carefully.
+        </p>
+      </div>
+    </section>
 
+    <section class="section" id="bookmarklets">
+      <h2>Utilities</h2>
+      <p class="section-intro">
+        Drag any button below into your bookmarks bar.
+      </p>
+
+      <div class="grid">
+        <article class="card">
+          <h3>IOC Search</h3>
+          <div class="tags">
+            <span class="tag">Threat Intel</span>
+            <span class="tag">SOC</span>
+            <span class="tag">IOC Lookup</span>
+          </div>
+          <p>
+            Detects IPs, domains, and common file hashes, then opens relevant
+            intelligence sources such as VirusTotal, AbuseIPDB, Whois, and Hybrid Analysis.
+          </p>
+          <a
+            class="bookmarklet-btn"
+            href='javascript:!function(){try{const e=(getSelection?getSelection().toString():"").trim(),t=(e||prompt("IOC?")||"").trim();if(!t)return;const o=encodeURIComponent(t),n=/^(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|1?\d?\d)){3}$/.test(t),r=/^(?:[A-Fa-f0-9]{1,4}:){2,7}[A-Fa-f0-9]{1,4}$/.test(t),a=/^(?:https?|ftp):\/\//i.test(t),c=/^[A-Fa-f0-9]{64}$/.test(t),i=/^[A-Fa-f0-9]{40}$/.test(t),s=/^[A-Fa-f0-9]{32}$/.test(t),f=c||i||s,d=!a&&/^[A-Za-z0-9-]{1,63}(\.[A-Za-z0-9-]{1,63})+\.?$/.test(t);let l=[];if(n||r)l=[`https://www.virustotal.com/gui/search/${o}`,`https://www.abuseipdb.com/check/${o}`];else if(d){const e=t.replace(/\.$/,"");l=[`https://www.virustotal.com/gui/search/${encodeURIComponent(e)}`,`https://www.whois.com/whois/${e}`]}else{if(!f)return void alert("Unsupported input. Enter IP, domain, or MD5/SHA1/SHA256 hash.");l=[`https://www.virustotal.com/gui/search/${o}`,`https://www.hybrid-analysis.com/search?query=${o}`]}[...new Set(l)].forEach(e=>window.open(e,"_blank"))}catch(e){alert("IOC launcher error: "+e)}}();'
+          >
+            Drag: IOC Search
+          </a>
+        </article>
+
+        <article class="card">
+          <h3>Bulk URL Opener</h3>
+          <div class="tags">
+            <span class="tag">Automation</span>
+            <span class="tag">Browser Utility</span>
+          </div>
+          <p>
+            Opens multiple URLs in separate tabs. Useful when you need to open a batch
+            of cases, sources, dashboards, or reference links quickly.
+          </p>
+          <a
+            class="bookmarklet-btn"
+            href='javascript:(()=>{const txt=prompt("Paste URLs (one per line)");if(!txt)return;const urls=txt.split(/\s+/).filter(Boolean);for(const u of urls){const href=/^https?:\/\//i.test(u)?u:"https://"+u;window.open(href,"_blank")}})();'
+          >
+            Drag: Bulk URL Opener
+          </a>
+        </article>
+
+        <article class="card">
+          <h3>Translator</h3>
+          <div class="tags">
+            <span class="tag">Text Utility</span>
+            <span class="tag">Browser Helper</span>
+          </div>
+          <p>
+            Translates selected text in a new tab using Google Translate.
+            Useful for foreign-language pages, domains, comments, and messages.
+          </p>
+          <a
+            class="bookmarklet-btn"
+            href='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Please select some text first.");window.open("https://translate.google.com/?sl=auto&tl=en&text="+encodeURIComponent(text));})();'
+          >
+            Drag: Translator
+          </a>
+        </article>
+
+        <article class="card">
+          <h3>Speech Reader</h3>
+          <div class="tags">
+            <span class="tag">Accessibility</span>
+            <span class="tag">Text Utility</span>
+          </div>
+          <p>
+            Reads selected text aloud using the browser speech synthesis API.
+            Helpful for quick reviews of selected content.
+          </p>
+          <a
+            class="bookmarklet-btn"
+            href='javascript:(function(){let text=window.getSelection().toString();if(!text)return alert("Select some text first.");let msg=new SpeechSynthesisUtterance(text);speechSynthesis.speak(msg);})();'
+          >
+            Drag: Speech Reader
+          </a>
+        </article>
+
+        <article class="card">
+          <h3>Consecutive Numbers Generator</h3>
+          <div class="tags">
+            <span class="tag">Utility</span>
+            <span class="tag">Clipboard</span>
+          </div>
+          <p>
+            Generates a range of consecutive numbers from input like
+            <code class="inline">5-10</code> and copies the result to the clipboard.
+          </p>
+          <a
+            class="bookmarklet-btn"
+            href='javascript:(function(){let input=prompt("Enter a range like 5-10:");if(!input||!input.includes("-")){alert("Please enter a valid range using a dash (e.g., 5-10).");return;}let[start,end]=input.split("-").map(Number);if(isNaN(start)||isNaN(end)){alert("Both values must be numbers.");return;}if(start>=end){alert("Start must be less than end.");return;}let outputNumbers=[];for(let i=start;i<=end;i++){outputNumbers.push(i);}let result=outputNumbers.join(", ");navigator.clipboard.writeText(result).then(()=>alert("Copied to clipboard!")).catch(err=>alert("Failed to copy: "+err));})();'
+          >
+            Drag: Number Generator
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Highlighters</h2>
+      <p class="section-intro">
+        Quick page highlighting and cleanup helpers.
+      </p>
+
+      <div class="grid">
+        <article class="card">
+          <h3>Yellow Highlighter</h3>
+          <div class="tags">
+            <span class="tag">Highlighting</span>
+            <span class="tag">Page Utility</span>
+          </div>
+          <p>
+            Highlights matching text in yellow across the page using selected text
+            or prompted input.
+          </p>
+          <a
+            class="bookmarklet-btn yellow"
+            href='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (YELLOW):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightYellow__",S="__copilotHighlightStyleYellow__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:yellow;color:black;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(255,255,0,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for \\""+q+"\\".");return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
+          >
+            Drag: Yellow Highlighter
+          </a>
+        </article>
+
+        <article class="card">
+          <h3>Red Highlighter</h3>
+          <div class="tags">
+            <span class="tag">Highlighting</span>
+            <span class="tag">Page Utility</span>
+          </div>
+          <p>
+            Highlights matching text in red across the page using selected text
+            or prompted input.
+          </p>
+          <a
+            class="bookmarklet-btn red"
+            href='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (RED):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightRed__",S="__copilotHighlightStyleRed__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:#ff3b30;color:white;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(255,59,48,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for \\""+q+"\\".");return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
+          >
+            Drag: Red Highlighter
+          </a>
+        </article>
+
+        <article class="card">
+          <h3>Green Highlighter</h3>
+          <div class="tags">
+            <span class="tag">Highlighting</span>
+            <span class="tag">Page Utility</span>
+          </div>
+          <p>
+            Highlights matching text in green across the page using selected text
+            or prompted input.
+          </p>
+          <a
+            class="bookmarklet-btn green"
+            href='javascript:(function(){function e(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function p(q){return Array.from(q).map(function(ch){return e(ch)+"[\\u200B\\u200C\\u200D\\uFEFF]*"}).join("")}function g(m){var s=window.getSelection&&window.getSelection().toString();var q=(s||"").trim();if(!q)q=prompt(m||"Highlight text (case-insensitive):")||"";return q.trim()}var q=g("Highlight (GREEN):");if(!q)return;var R=new RegExp(p(q),"gi"),C="__copilotHighlightGreen__",S="__copilotHighlightStyleGreen__";if(!document.getElementById(S)){var st=document.createElement("style");st.id=S;st.textContent="."+C+"{background:#34c759;color:#0b2312;padding:0 .1em;border-radius:2px;box-shadow:0 0 0 2px rgba(52,199,89,.25) inset}";document.head.appendChild(st)}function u(el){for(var a=el;a;a=a.parentNode){if(a.classList&&(a.classList.contains("__copilotHighlightYellow__")||a.classList.contains("__copilotHighlightRed__")||a.classList.contains("__copilotHighlightGreen__")))return true}return false}var w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentNode;if(!p)return NodeFilter.FILTER_REJECT;if(/^(SCRIPT|STYLE|NOSCRIPT|IFRAME|CANVAS|SVG)$/i.test(p.nodeName))return NodeFilter.FILTER_REJECT;if(u(p))return NodeFilter.FILTER_REJECT;if(!n.data||!n.data.trim())return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}}),N=[],x;while((x=w.nextNode()))N.push(x);var B="",M=[];for(var i=0;i<N.length;i++){var nd=N[i],s=B.length;B+=nd.data;M.push({node:nd,start:s,end:s+nd.data.length})}if(!R.test(B)){alert("No matches for \\""+q+"\\".");return}R.lastIndex=0;var A=[],m;while((m=R.exec(B)))A.push({s:m.index,e:m.index+m[0].length});function L(o){for(var i=0;i<M.length;i++){var e0=M[i];if(o>=e0.start&&o<=e0.end)return{node:e0.node,offset:o-e0.start}}if(o<M[0].start)return{node:M[0].node,offset:0};var l=M[M.length-1];return{node:l.node,offset:l.node.data.length}}function W(sN,sO,eN,eO){var r=document.createRange();r.setStart(sN,sO);r.setEnd(eN,eO);var sp=document.createElement("span");sp.className=C;sp.textContent=r.toString();r.deleteContents();r.insertNode(sp)}for(i=A.length-1;i>=0;i--){var S1=L(A[i].s),E1=L(A[i].e);try{W(S1.node,S1.offset,E1.node,E1.offset)}catch(_){}}})();'
+          >
+            Drag: Green Highlighter
+          </a>
+        </article>
+
+        <article class="card">
+          <h3>Highlight Cleaner</h3>
+          <div class="tags">
+            <span class="tag">Cleanup</span>
+            <span class="tag">Page Utility</span>
+          </div>
+          <p>
+            Removes stored yellow, red, and green highlights from the current page.
+          </p>
+          <a
+            class="bookmarklet-btn"
+            href='javascript:(function(){var C=[{c:"__copilotHighlightYellow__",s:"__copilotHighlightStyleYellow__"},{c:"__copilotHighlightRed__",s:"__copilotHighlightStyleRed__"},{c:"__copilotHighlightGreen__",s:"__copilotHighlightStyleGreen__"}];C.forEach(function(x){document.querySelectorAll("."+x.c).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(x.s);if(st)st.remove()})})();'
+          >
+            Drag: Highlight Cleaner
+          </a>
+        </article>
+      </div>
+    </section>
+
+    <div class="note">
+      Tip: If dragging does not work, create a new browser bookmark manually and paste
+      the bookmarklet code into the bookmark URL field.
+    </div>
+
+    <footer class="footer">
+      Built for lightweight browser automation and security workflows.
+      View the source on
+      <a href="https://github.com/dtsakmakis/soc-browser-bookmarklets" target="_blank" rel="noopener noreferrer">GitHub</a>.
+    </footer>
+  </div>
 </body>
 </html>
