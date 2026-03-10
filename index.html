@@ -1,83 +1,378 @@
-<article
-  class="card bookmarklet-card"
-  data-category="investigation"
-  data-search="ioc extractor investigation soc urls domains ips emails hashes md5 sha1 sha256"
->
-  <h3>IOC Extractor</h3>
-  <div class="tags">
-    <span class="tag">Investigation</span>
-    <span class="tag">SOC</span>
-    <span class="tag">IOC Extraction</span>
-  </div>
-  <p>
-    Extract URLs, domains, IP addresses, emails, and hashes from the current page
-    with filtered views, copy support, and download support.
-  </p>
-  <div class="card-actions">
-    <a
-      class="bookmarklet-btn"
-      id="ioc-extractor-drag"
-      title="Drag to bookmarks bar"
-      draggable="true"
-      href="#"
-    >
-      Drag to Bookmarks
-    </a>
-    <button
-      class="copy-btn"
-      id="ioc-extractor-copy"
-      type="button"
-    >
-      Copy Bookmarklet Code
-    </button>
-    <button
-      class="copy-btn"
-      id="ioc-extractor-run"
-      type="button"
-    >
-      Run on This Page
-    </button>
-  </div>
-</article>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Security Browser Bookmarklets</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<article
-  class="card bookmarklet-card"
-  data-category="investigation"
-  data-search="url extractor urls domains ips external same-origin recon page analysis"
->
-  <h3>URL Extractor</h3>
-  <div class="tags">
-    <span class="tag">Recon</span>
-    <span class="tag">Page Analysis</span>
-    <span class="tag">URL Extraction</span>
-  </div>
-  <p>
-    Extracts unique URLs from the current page and lets you switch between
-    all URLs, external URLs, same-origin URLs, domains, and IP addresses.
-  </p>
-  <div class="card-actions">
-    <a
-      class="bookmarklet-btn"
-      id="url-extractor-drag"
-      title="Drag to bookmarks bar"
-      draggable="true"
-      href="#"
-    >
-      Drag to Bookmarks
-    </a>
-    <button
-      class="copy-btn"
-      id="url-extractor-copy"
-      type="button"
-    >
-      Copy Bookmarklet Code
-    </button>
-    <button
-      class="copy-btn"
-      id="url-extractor-run"
-      type="button"
-    >
-      Run on This Page
-    </button>
-  </div>
-</article>
+<style>
+body{
+font-family:system-ui,Segoe UI,Roboto,Arial;
+background:#0d1117;
+color:#e6edf3;
+margin:0;
+}
+
+header{
+padding:40px 24px;
+text-align:center;
+}
+
+h1{
+margin:0;
+font-size:32px;
+}
+
+.subtitle{
+color:#8b949e;
+margin-top:10px;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+.search{
+margin:20px 0;
+}
+
+input[type="text"]{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:1px solid #30363d;
+background:#161b22;
+color:white;
+}
+
+.filters{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-bottom:20px;
+}
+
+.filter-chip{
+padding:6px 12px;
+border-radius:999px;
+border:1px solid #30363d;
+cursor:pointer;
+}
+
+.filter-chip.active{
+background:#238636;
+border-color:#238636;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:20px;
+}
+
+.card{
+background:#161b22;
+padding:20px;
+border-radius:10px;
+border:1px solid #30363d;
+}
+
+.card h3{
+margin-top:0;
+}
+
+.tags{
+margin:8px 0 12px 0;
+}
+
+.tag{
+border:1px solid #30363d;
+padding:4px 8px;
+border-radius:999px;
+font-size:12px;
+margin-right:5px;
+}
+
+.card-actions{
+margin-top:12px;
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+}
+
+.bookmarklet-btn{
+background:#2f81f7;
+padding:8px 10px;
+border-radius:6px;
+text-decoration:none;
+color:white;
+font-size:13px;
+}
+
+.copy-btn{
+background:#238636;
+border:none;
+padding:8px 10px;
+border-radius:6px;
+color:white;
+cursor:pointer;
+font-size:13px;
+}
+
+.hidden{
+display:none;
+}
+
+.install-box{
+background:#0f1720;
+border:1px solid #30363d;
+border-radius:10px;
+padding:16px;
+margin-bottom:20px;
+}
+
+.install-header{
+display:flex;
+justify-content:space-between;
+cursor:pointer;
+}
+
+.install-content{
+display:none;
+margin-top:10px;
+color:#8b949e;
+}
+
+.install-box.open .install-content{
+display:block;
+}
+
+footer{
+text-align:center;
+margin-top:40px;
+color:#8b949e;
+font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Security Browser Bookmarklets</h1>
+<div class="subtitle">SOC investigation & browser automation tools</div>
+</header>
+
+<div class="container">
+
+<div class="install-box" id="installHelp">
+<div class="install-header" id="installHelpToggle">
+<b>How to install bookmarklets</b>
+<span id="installHelpIcon">+</span>
+</div>
+
+<div class="install-content">
+1️⃣ Drag the bookmarklet button to your bookmarks bar.<br>
+2️⃣ Click it while browsing any website.<br><br>
+
+If pop-ups are blocked the first time:<br>
+Allow pop-ups for this site and try again.
+</div>
+</div>
+
+<div class="search">
+<input id="searchInput" type="text" placeholder="Search bookmarklets...">
+</div>
+
+<div class="filters">
+<div class="filter-chip active" data-filter="all">All</div>
+<div class="filter-chip" data-filter="investigation">Investigation</div>
+<div class="filter-chip" data-filter="highlight">Highlight</div>
+<div class="filter-chip" data-filter="utility">Utility</div>
+</div>
+
+<div id="resultsCount"></div>
+
+<div class="grid">
+
+<!-- IOC Search -->
+<div class="card bookmarklet-card" data-category="investigation" data-search="ioc search threat intel virustotal abuseipdb whois hybrid">
+<h3>IOC Search</h3>
+
+<div class="tags">
+<span class="tag">Threat Intel</span>
+<span class="tag">SOC</span>
+</div>
+
+<p>Detects IPs, domains and hashes and opens threat intel sources.</p>
+
+<div class="card-actions">
+<a class="bookmarklet-btn" id="ioc-search-drag" href="#">Drag to Bookmarks</a>
+<button class="copy-btn" id="ioc-search-copy">Copy Bookmarklet Code</button>
+<button class="copy-btn" id="ioc-search-run">Run on this page</button>
+</div>
+
+</div>
+
+<!-- IOC Extractor -->
+
+<div class="card bookmarklet-card" data-category="investigation" data-search="ioc extractor urls domains ips emails hashes">
+<h3>IOC Extractor</h3>
+
+<div class="tags">
+<span class="tag">Investigation</span>
+<span class="tag">SOC</span>
+</div>
+
+<p>Extract URLs, domains, IPs, emails and hashes from the current page.</p>
+
+<div class="card-actions">
+<a class="bookmarklet-btn" id="ioc-extractor-drag" href="#">Drag to Bookmarks</a>
+<button class="copy-btn" id="ioc-extractor-copy">Copy Bookmarklet Code</button>
+<button class="copy-btn" id="ioc-extractor-run">Run on this page</button>
+</div>
+
+</div>
+
+<!-- URL Extractor -->
+
+<div class="card bookmarklet-card" data-category="investigation" data-search="url extractor recon page analysis">
+<h3>URL Extractor</h3>
+
+<div class="tags">
+<span class="tag">Recon</span>
+<span class="tag">Page Analysis</span>
+</div>
+
+<p>Extract all URLs from the current page.</p>
+
+<div class="card-actions">
+<a class="bookmarklet-btn" id="url-extractor-drag" href="#">Drag to Bookmarks</a>
+<button class="copy-btn" id="url-extractor-copy">Copy Bookmarklet Code</button>
+<button class="copy-btn" id="url-extractor-run">Run on this page</button>
+</div>
+
+</div>
+
+<!-- Speech Reader -->
+
+<div class="card bookmarklet-card" data-category="utility" data-search="speech reader tts text to speech">
+<h3>Speech Reader</h3>
+
+<div class="tags">
+<span class="tag">Utility</span>
+</div>
+
+<p>Reads selected text aloud using browser speech synthesis.</p>
+
+<div class="card-actions">
+<a class="bookmarklet-btn" id="speech-drag" href="#">Drag to Bookmarks</a>
+<button class="copy-btn" id="speech-copy">Copy Bookmarklet Code</button>
+<button class="copy-btn" id="speech-run">Run on this page</button>
+</div>
+
+</div>
+
+</div>
+
+<footer>
+MIT License • GitHub Bookmarklets Project
+</footer>
+
+</div>
+
+<script>
+
+const IOC_SEARCH_CODE="javascript:alert('IOC Search placeholder')"
+
+const IOC_EXTRACTOR_CODE="javascript:alert('IOC Extractor placeholder')"
+
+const URL_EXTRACTOR_CODE="javascript:alert('URL Extractor placeholder')"
+
+const SPEECH_CODE=`javascript:(()=>{alert("Speech Reader loaded")})();`
+
+function attachBookmarklet(drag,copy,run,code){
+
+const dragEl=document.getElementById(drag)
+const copyEl=document.getElementById(copy)
+const runEl=document.getElementById(run)
+
+if(dragEl)dragEl.href=code
+
+if(copyEl){
+copyEl.onclick=async()=>{
+await navigator.clipboard.writeText(code)
+copyEl.innerText="Copied"
+setTimeout(()=>copyEl.innerText="Copy Bookmarklet Code",1200)
+}
+}
+
+if(runEl){
+runEl.onclick=()=>location.href=code
+}
+
+}
+
+attachBookmarklet("ioc-search-drag","ioc-search-copy","ioc-search-run",IOC_SEARCH_CODE)
+attachBookmarklet("ioc-extractor-drag","ioc-extractor-copy","ioc-extractor-run",IOC_EXTRACTOR_CODE)
+attachBookmarklet("url-extractor-drag","url-extractor-copy","url-extractor-run",URL_EXTRACTOR_CODE)
+attachBookmarklet("speech-drag","speech-copy","speech-run",SPEECH_CODE)
+
+
+const searchInput=document.getElementById("searchInput")
+const cards=document.querySelectorAll(".bookmarklet-card")
+const filters=document.querySelectorAll(".filter-chip")
+const results=document.getElementById("resultsCount")
+
+let active="all"
+
+function update(){
+
+const q=searchInput.value.toLowerCase()
+let count=0
+
+cards.forEach(card=>{
+
+const category=card.dataset.category
+const search=card.dataset.search
+
+const visible=(active==="all"||category===active)&&(search.includes(q))
+
+card.classList.toggle("hidden",!visible)
+
+if(visible)count++
+
+})
+
+results.innerText=count+" bookmarklets"
+
+}
+
+filters.forEach(f=>{
+f.onclick=()=>{
+filters.forEach(x=>x.classList.remove("active"))
+f.classList.add("active")
+active=f.dataset.filter
+update()
+}
+})
+
+searchInput.oninput=update
+update()
+
+const help=document.getElementById("installHelp")
+const toggle=document.getElementById("installHelpToggle")
+const icon=document.getElementById("installHelpIcon")
+
+toggle.onclick=()=>{
+help.classList.toggle("open")
+icon.innerText=help.classList.contains("open")?"−":"+"
+}
+
+</script>
+
+</body>
+</html>
