@@ -568,7 +568,7 @@
           aria-label="Search bookmarklets"
         />
         <div class="results-meta">
-          <span id="resultsCount">13 bookmarklets shown</span>
+          <span id="resultsCount">14 bookmarklets shown</span>
         </div>
       </div>
 
@@ -905,6 +905,34 @@
           </div>
         </article>
       </div>
+
+      
+        <article class="card bookmarklet-card" data-category="highlighters" data-search="link highlighter highlight links anchors investigation page utility">
+          <h3>Link Highlighter</h3>
+          <div class="tags">
+            <span class="tag">Highlighting</span>
+            <span class="tag">Links</span>
+            <span class="tag">Investigation</span>
+          </div>
+          <p>
+            Highlights all links on the page for quick visual inspection.
+            Adds a floating reset button to remove the highlights.
+          </p>
+          <div class="card-actions">
+            <a class="bookmarklet-btn yellow"
+              title="Click to run on this page or drag to bookmarks bar"
+              draggable="true"
+              href='javascript:(function(){document.querySelectorAll("a").forEach(a=>a.style.backgroundColor="#ffff99");var b=document.createElement("button");b.textContent="Reset Highlights";b.style.position="fixed";b.style.top="10px";b.style.right="10px";b.style.zIndex="9999";b.style.padding="10px";b.style.backgroundColor="#f44336";b.style.color="white";b.style.border="none";b.style.borderRadius="5px";b.style.cursor="pointer";b.onclick=function(){document.querySelectorAll("a").forEach(a=>a.style.backgroundColor="");b.remove();};document.body.appendChild(b);})();'>
+              Click or Drag
+            </a>
+            <button class="copy-btn"
+              data-code='javascript:(function(){document.querySelectorAll("a").forEach(a=>a.style.backgroundColor="#ffff99");var b=document.createElement("button");b.textContent="Reset Highlights";b.style.position="fixed";b.style.top="10px";b.style.right="10px";b.style.zIndex="9999";b.style.padding="10px";b.style.backgroundColor="#f44336";b.style.color="white";b.style.border="none";b.style.borderRadius="5px";b.style.cursor="pointer";b.onclick=function(){document.querySelectorAll("a").forEach(a=>a.style.backgroundColor="");b.remove();};document.body.appendChild(b);})();'
+              type="button">
+              Copy Bookmarklet Code
+            </button>
+          </div>
+        </article>
+
 
       <div id="emptyState" class="empty-state">
         No bookmarklets matched your search or selected category.
