@@ -1,0 +1,1 @@
+javascript:(function() {  let text = window.getSelection().toString();  if (!text) return alert("Please select some text first.");  window.open("https://translate.google.com/?sl=auto&tl=en&text=" + encodeURIComponent(text));})();

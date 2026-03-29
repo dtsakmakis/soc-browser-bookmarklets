@@ -1,0 +1,1 @@
+javascript:(function(){var C="__copilotHighlightRed__",S="__copilotHighlightStyleRed__";document.querySelectorAll("."+C).forEach(function(s){var p=s.parentNode;p.replaceChild(document.createTextNode(s.textContent),s);if(p.normalize)p.normalize()});var st=document.getElementById(S);if(st)st.remove()})();
